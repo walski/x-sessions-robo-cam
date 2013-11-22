@@ -3,7 +3,7 @@ require 'open-uri'
 
 module X::Sessions::Robo::Cam
   class Guestlist
-    URL = 'https://docs.google.com/spreadsheet/pub?key=0Au_LuhlBQUkEdDkzSURKY1Z5X05fcGZ5UFVFYVhfUHc&single=true&gid=2&output=csv'
+    URL = ENV['GUESTLIST_URL']
 
     attr_reader :guests
 
