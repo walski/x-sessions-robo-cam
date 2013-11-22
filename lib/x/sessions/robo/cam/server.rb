@@ -15,6 +15,20 @@ module X::Sessions::Robo::Cam
 
         url = QrReader.read_from_image(image)
 
+        unless url
+          img = Magick::ImageList.new(image).cur_image
+
+          crop_x = img.columns / 4
+          crop_y = img.rows / 2
+          crop_width = img.columns / 2
+          crop_height = img.rows / 2
+
+          img.crop!(crop_x, crop_y, crop_width, crop_height, true)
+          img.write(image)
+          url = QrReader.read_from_image(image)
+        end
+
+
         if url
           if url.match /^http(s?):\/\//
             badge_no = Decoder.url_to_badge_no(url)

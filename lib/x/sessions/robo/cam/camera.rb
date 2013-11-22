@@ -7,29 +7,20 @@ module X::Sessions::Robo::Cam
     FRAME_PATH = File.expand_path('../../../../../../frame.jpg', __FILE__)
 
     def initialize
-      at_exit {stop_cam}
-      trap("HUP") {p '222'; stop_cam}
+      # at_exit {stop_cam}
+      # trap("HUP") {p '222'; stop_cam}
 
-      start_cam
+      # start_cam
     end
 
     def get_frame
-      empty_tmp_dir
-      ensure_cam_is_running
+      cam_command
+
       frame = tmp_files_by_creation_time.last
 
       return nil unless frame
 
       FileUtils.cp(frame, FRAME_PATH)
-      img = Magick::ImageList.new(FRAME_PATH).cur_image
-
-      crop_x = img.columns / 4
-      crop_y = img.rows / 2
-      crop_width = img.columns / 2
-      crop_height = img.rows / 2
-
-      img.crop!(crop_x, crop_y, crop_width, crop_height, true)
-      img.write(FRAME_PATH)
       FRAME_PATH
     end
 
@@ -55,7 +46,7 @@ module X::Sessions::Robo::Cam
     end
 
     def cam_command
-      `cd '#{TMP_DIR}';imagesnap -t 1 -d '#{cam_name}' -w 1 -q`
+      `cd '#{TMP_DIR}';imagesnap -d '#{cam_name}' -q`
     end
 
     def cam_name
